@@ -1,3 +1,7 @@
+![Ruby](https://img.shields.io/badge/ruby-2.7.0-green.svg)
+[![Gem Version](https://badge.fury.io/rb/scraper_rb.svg)](https://badge.fury.io/rb/scraper_rb)
+[![Build Status](https://travis-ci.org/promptapi/scraper_rb.svg?branch=main)](https://travis-ci.org/promptapi/scraper_rb)
+
 # Prompt API - Scraper API - Ruby Package
 
 `scraper_rb` is a simple python wrapper for [scraper-api][scraper-api].
@@ -10,8 +14,14 @@
 
 then;
 
-```ruby
-# @wip
+```bash
+$ gem install scraper_rb
+```
+
+or; install from GitHub:
+
+```bash
+$ gem install scraper_rb --version "0.0.0" --source "https://rubygems.pkg.github.com/promptapi"
 ```
 
 ---
