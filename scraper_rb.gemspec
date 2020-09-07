@@ -18,5 +18,10 @@ Gem::Specification.new do |spec|
     `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   end
   spec.require_paths = ["lib"]
+  spec.add_development_dependency 'wirble', '~> 0.1.3'
+  spec.add_development_dependency 'awesome_print', '~> 1.8'
+  spec.add_development_dependency 'bond', '~> 0.5.1'
+  spec.add_development_dependency 'colorize', '~> 0.8.1'
+
   spec.add_runtime_dependency 'faraday', '~> 1.0', '>= 1.0.1'
 end
