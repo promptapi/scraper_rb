@@ -20,9 +20,10 @@ module ScraperRb
   end
   
   class << self
-    def new(url, params={})
+    def new(url, params={}, timeout=10)
       puts "params: #{params}" if ENV['RUBY_DEVELOPMENT']
-      ScraperRb::Scraper.new(url, params)
+      puts "timeout: #{timeout}" if ENV['RUBY_DEVELOPMENT']
+      ScraperRb::Scraper.new(url, params, timeout)
     end
   end
   
@@ -31,13 +32,15 @@ module ScraperRb
 
     attr_accessor :options, :response
 
-    def initialize(url, params=nil, timeout=10)
+    def initialize(url, params, timeout)
+      params = {} if params == nil
       @options = {
         url: ENV['PROMPTAPI_TEST_ENDPOINT'] || 'https://api.promptapi.com/scraper',
         params: {url: url},
         request: {timeout: timeout},
         headers: {'Accept' => 'application/json', 'apikey' => ENV['PROMPTAPI_TOKEN']},
       }
+      puts "-> params: #{params}"
       params.each do |key, value|
         @options[:params][key] = value if VALID_PARAMS.map(&:to_sym).include?(key)
       end
@@ -79,6 +82,24 @@ module ScraperRb
       end
     end
 
-  end
+    def save(filename)
+      return {error: 'Data is not available'} unless @response[:data]
+      save_extension = '.html'
+      save_data = @response[:data]
+      if @response[:data].class == Array
+        save_extension = '.json'
+        save_data = JSON.generate(@response[:data])
+      end
+      file_dirname = File.dirname(filename)
+      file_basename = File.basename(filename, save_extension)
+      file_savename = "#{file_dirname}/#{file_basename}#{save_extension}"
+      begin
+        File.open(file_savename, 'w') {|file| file.write(save_data)}
+        return {file: file_savename, size: File.size(file_savename)}
+      rescue Errno::ENOENT => e
+        return {error: "#{e}"}
+      end
+    end
 
+  end
 end

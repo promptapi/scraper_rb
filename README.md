@@ -28,7 +28,70 @@ $ gem install scraper_rb --version "0.0.0" --source "https://rubygems.pkg.github
 
 ## Example Usage
 
-@wip
+Basic scraper:
+
+```ruby
+require "scraper_rb"
+
+s = ScraperRb.new('https://pypi.org/classifiers/') # no params
+s.get
+s.response
+# {
+#     :headers=>{:"Content-Length"=>...}, 
+#     :url=>"https://pypi.org/classifiers/",
+#     :data=>"<!DOCTYPE html>\n<html> ...",
+# }
+
+s.response[:headers]     # => return response headers
+s.response[:data]        # => return scraped html
+s.save('/tmp/data.html') # => {:file=>"/tmp/data.html", :size=>321322}
+
+# or
+
+save_result = s.save('/tmp/data.html')
+puts save_result[:error] if save_result.key?(:error) # we have a file error
+```
+
+You can add url parameters for extra operations. Valid parameters are:
+
+- `auth_password`: for HTTP Realm auth password
+- `auth_username`: for HTTP Realm auth username
+- `cookie`: URL Encoded cookie header.
+- `country`: 2 character country code. If you wish to scrape from an IP address of a specific country.
+- `referer`: HTTP referer header
+- `selector`: CSS style selector path such as `a.btn div li`. If `selector`
+  is enabled, returning result will be collection of data and saved file
+  will be in `.json` format.
+
+Here is an example with using url parameters and `selector`:
+
+```ruby
+require "scraper_rb"
+
+params = {country: 'EE', selector: 'ul li button[data-clipboard-text]'}
+s = ScraperRb.new('https://pypi.org/classifiers/', params)
+s.get
+s.response[:headers]       # => return response headers
+s.response[:data]          # => return an array, collection of given selector
+s.response[:data].length   # => 734 
+s.save('/tmp/test.json')   # => {:file=>"/tmp/test.json", :size=>174449}
+
+# or
+
+save_result = s.save('/tmp/test.json')
+puts save_result[:error] if save_result.key?(:error) # we have a file error
+```
+
+Default **timeout** value is set to `10` seconds. You can change this while
+initializing the instance:
+
+```ruby
+s = ScraperRb.new('https://pypi.org/classifiers/', {}, timeout=50) 
+# => 50 seconds timeout w/o params
+
+s = ScraperRb.new('https://pypi.org/classifiers/', {country: 'EE'}, timeout=50) 
+# => 50 seconds timeout
+```
 
 ---
 
@@ -55,6 +118,9 @@ rake install:local    # Build and install bin_checker_rb-X.X.X.gem into system g
 rake release[remote]  # Create tag v0.0.0 and build and push bin_checker_rb-X.X.X.gem to rubygems.org
 rake test             # Run tests
 ```
+
+- If you have `PROMPTAPI_TOKEN` you’ll have real http request based tests available.
+- Set `RUBY_DEVELOPMENT` to `1` for more verbose test results
 
 ---
 
