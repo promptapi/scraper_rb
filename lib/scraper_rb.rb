@@ -21,8 +21,6 @@ module ScraperRb
   
   class << self
     def new(url, params={}, timeout=10)
-      puts "params: #{params}" if ENV['RUBY_DEVELOPMENT']
-      puts "timeout: #{timeout}" if ENV['RUBY_DEVELOPMENT']
       ScraperRb::Scraper.new(url, params, timeout)
     end
   end
@@ -40,7 +38,6 @@ module ScraperRb
         request: {timeout: timeout},
         headers: {'Accept' => 'application/json', 'apikey' => ENV['PROMPTAPI_TOKEN']},
       }
-      puts "-> params: #{params}"
       params.each do |key, value|
         @options[:params][key] = value if VALID_PARAMS.map(&:to_sym).include?(key)
       end
