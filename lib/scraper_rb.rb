@@ -20,8 +20,8 @@ module ScraperRb
   end
   
   class << self
-    def new(url, params={}, timeout=10)
-      ScraperRb::Scraper.new(url, params, timeout)
+    def new(url, params={}, headers={}, timeout=10)
+      ScraperRb::Scraper.new(url, params, headers, timeout)
     end
   end
   
@@ -30,13 +30,19 @@ module ScraperRb
 
     attr_accessor :options, :response
 
-    def initialize(url, params, timeout)
+    def initialize(url, params, extra_headers, timeout)
       params = {} if params == nil
+      default_headers = {
+        'Accept' => 'application/json', 
+        'apikey' => ENV['PROMPTAPI_TOKEN'],
+      }
+      default_headers.merge!(extra_headers) if extra_headers
+
       @options = {
         url: ENV['PROMPTAPI_TEST_ENDPOINT'] || 'https://api.promptapi.com/scraper',
         params: {url: url},
         request: {timeout: timeout},
-        headers: {'Accept' => 'application/json', 'apikey' => ENV['PROMPTAPI_TOKEN']},
+        headers: default_headers,
       }
       params.each do |key, value|
         @options[:params][key] = value if VALID_PARAMS.map(&:to_sym).include?(key)

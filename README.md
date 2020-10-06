@@ -86,12 +86,25 @@ Default **timeout** value is set to `10` seconds. You can change this while
 initializing the instance:
 
 ```ruby
-s = ScraperRb.new('https://pypi.org/classifiers/', {}, timeout=50) 
+s = ScraperRb.new('https://pypi.org/classifiers/', params={}, timeout=50) 
 # => 50 seconds timeout w/o params
 
-s = ScraperRb.new('https://pypi.org/classifiers/', {country: 'EE'}, timeout=50) 
+s = ScraperRb.new('https://pypi.org/classifiers/', params={country: 'EE'}, timeout=50) 
 # => 50 seconds timeout
 ```
+
+You can add extra `X-` headers:
+
+```ruby
+s = ScraperRb.new('https://pypi.org/classifiers/', headers={'X-Referer': 'https://www.google.com'}) 
+
+# or
+s = ScraperRb.new('https://pypi.org/classifiers/', params={country: 'EE'}, headers={'X-Referer': 'https://www.google.com'}, timeout=50) 
+# => 50 seconds timeout
+```
+
+`headers` param is a `Hash`, you can add key/value data. Header keys must star
+with `X-` prefix. More detail can found at [Mozilla](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) site.
 
 ---
 
